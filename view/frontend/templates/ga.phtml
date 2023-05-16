@@ -1,0 +1,25 @@
+<?php
+/**
+ * Copyright © Samdoit (support@samdoit.com). All rights reserved.
+ * Please visit Samdoit.com for license details (https://samdoit.com/end-user-license-agreement).
+ */
+?>
+<?php /** @var $block \Samdoit\GoogleAnalytics\Block\Ga */ ?>
+<?php $accountId = $block->getConfig(\Samdoit\GoogleAnalytics\Helper\Data::XML_PATH_ACCOUNT) ?>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $accountId; ?>"></script>
+<!-- BEGIN GOOGLE ANALYTICS CODE -->
+<script type="text/x-magento-init">
+{
+    "*": {
+        "Samdoit_GoogleAnalytics/js/google-analytics": {
+            "isCookieRestrictionModeEnabled": <?= (int)$block->isCookieRestrictionModeEnabled() ?>,
+            "currentWebsite": <?= (int)$block->getCurrentWebsiteId() ?>,
+            "cookieName": "<?= /* @noEscape */ \Magento\Cookie\Helper\Cookie::IS_USER_ALLOWED_SAVE_COOKIE ?>",
+            "ordersTrackingData": <?= /* @noEscape */ json_encode($block->getOrdersTrackingData()) ?>,
+            "pageTrackingData": <?= /* @noEscape */ json_encode($block->getPageTrackingData($accountId)) ?>
+        }
+    }
+}
+</script>
+<!-- END GOOGLE ANALYTICS CODE -->
