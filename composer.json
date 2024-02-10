@@ -1,11 +1,15 @@
 {
     "name": "samdoit/module-google-analytics",
-    "description": "google 4 analytics",
+    "description": "Magento 2 Module for Google Analytics 4",
+    "require": {
+        "samdoit/module-community" : ">=1.0.0"
+    },
     "type": "magento2-module",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
     ],
+    "suggest": {},
     "autoload": {
         "files": [
             "registration.php"
@@ -14,5 +18,5 @@
             "Samdoit\\GoogleAnalytics\\": ""
         }
     },
-    "version": "1.0.1"
+    "version": "1.0.2"
 }

@@ -2,7 +2,7 @@
 <!--
 /**
  * Copyright © Samdoit (support@samdoit.com). All rights reserved.
- * Please visit Samdoit.com for license details (https://samdoit.com/end-user-license-agreement).
+ * Please visit Samdoit.com for license details (http://www.samdoit.com/end-user-license-agreement).
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
@@ -11,19 +11,35 @@
             <label>Samdoit Extensions</label>
         </tab>
         <section id="samdoit_google" translate="label" type="text" sortOrder="340" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>Google API</label>
+            <label>Google Analytics 4</label>
             <tab>samdoit</tab>
             <resource>Samdoit_GoogleAnalytics::config_samdoit_google</resource>
-            <group id="analytics" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Google Analytics 4</label>
-                <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable</label>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General</label>
+                <attribute type="expanded">1</attribute>
+                <field id="version" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <frontend_model>Samdoit\GoogleAnalytics\Block\Adminhtml\System\Config\Form\Info</frontend_model>
+                </field>
+                <field id="enabled" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Extension</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="account" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Account Number</label>
+                <field id="key" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Product Key</label>
+                    <frontend_model>Samdoit\Community\Block\Adminhtml\System\Config\Form\ProductKeyField</frontend_model>
+                </field>
+            </group>
+            <group id="analytics" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Google Analytics 4</label>
+                <field id="measurement_id" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Measurement ID</label>
+                    <comment><![CDATA[
+                            <p>Please get the measurement ID from the Stream details page (<a href="https://analytics.google.com/analytics/web/" title="Google Analitics" target="_blank" rel="nofollow noopener">Google Analytics</a> > Admin > Data Streams).</p>
+                            <p>E.g. G-XXXXXXXXXX
+                        ]]>
+                    </comment>
                     <depends>
-                        <field id="*/*/active">1</field>
+                        <field id="enable">1</field>
                     </depends>
                 </field>
                 <field id="anonymize" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -32,6 +48,21 @@
                     <depends>
                         <field id="*/*/active">1</field>
                     </depends>
+                </field>
+                <field id="events" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Events</label>
+                    <frontend_model>Samdoit\GoogleAnalytics\Block\Adminhtml\System\Config\Form\EventList</frontend_model>
+                </field>
+            </group>
+            <group id="attributes" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Product Attributes Mapping</label>
+                <field id="product" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Product Identifier</label>
+                    <source_model>Samdoit\GoogleAnalytics\Model\Config\Source\ProductAttribute</source_model>
+                </field>
+                <field id="brand" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Brand Identifier</label>
+                    <source_model>Samdoit\GoogleAnalytics\Model\Config\Source\BrandAttribute</source_model>
                 </field>
             </group>
         </section>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © Samdoit (support@samdoit.com). All rights reserved.
+ * Please visit Samdoit.com for license details (https://www.samdoit.com/end-user-license-agreement).
+ */
+-->
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="samdoit-google" type="host">*.google.com</value>
+                <value id="samdoit-google-ua" type="host">*.google.com.ua</value>
+                <value id="samdoit-google-uk" type="host">*.google.co.uk</value>
+                <value id="samdoit-gstatic" type="host">*.gstatic.com</value>
+                <value id="samdoit-googletagmanager-com" type="host">*.googletagmanager.com</value>
+                <value id="samdoit-doubleclick-net" type="host">*.doubleclick.net</value>
+                <value id="google_ad_services_conversion" type="host">googleads.g.doubleclick.net</value>
+                <value id="google_ad_services" type="host">www.googleadservices.com</value>
+                <value id="google_analytics" type="host">www.google-analytics.com</value>
+                <value id="google_analytics_4" type="host">analytics.google.com</value>
+                <value id="google_tag_manager" type="host">www.googletagmanager.com</value>
+            </values>
+        </policy>
+        <policy id="style-src">
+            <values>
+                <value id="samdoit-googleapis-com" type="host">*.googleapis.com</value>
+                <value id="samdoit-googletagmanager-com" type="host">*.googletagmanager.com</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="samdoit-googleanalytics" type="host">*.google-analytics.com</value>
+                <value id="samdoit-google-com" type="host">*.google.com</value>
+                <value id="google_ad_services" type="host">www.googleadservices.com</value>
+                <value id="google_analytics" type="host">www.google-analytics.com</value>
+                <value id="google_analytics_4" type="host">analytics.google.com</value>
+                <value id="google_tag_manager" type="host">www.googletagmanager.com</value>
+            </values>
+        </policy>
+        <policy id="frame-src">
+            <values>
+                <value id="samdoit-google" type="host">*.google.com</value>
+                <value id="samdoit-google-ua" type="host">*.google.com.ua</value>
+                <value id="samdoit-google-uk" type="host">*.google.co.uk</value>
+                <value id="google_ad_services_bid" type="host">bid.g.doubleclick.net</value>
+            </values>
+        </policy>
+        <policy id="font-src">
+            <values>
+                <value id="samdoit-gstatic-com" type="host">*.gstatic.com</value>
+            </values>
+        </policy>
+        <policy id="img-src">
+            <values>
+                <value id="samdoit-google" type="host">*.google.com</value>
+                <value id="samdoit-google-ua" type="host">*.google.com.ua</value>
+                <value id="samdoit-google-uk" type="host">*.google.co.uk</value>
+                <value id="samdoit-gstatic-com" type="host">*.gstatic.com</value>
+                <value id="samdoit-doubleclick-net" type="host">*.doubleclick.net</value>
+               <value id="google_ad_services_pixel" type="host">googleads.g.doubleclick.net</value>
+               <value id="google_ad_services_conversion" type="host">www.google.com</value>
+               <value id="google_ad_services_bid" type="host">bid.g.doubleclick.net</value>
+                <value id="google_ad_services" type="host">www.googleadservices.com</value>
+                <value id="google_analytics" type="host">www.google-analytics.com</value>
+                <value id="google_analytics_4" type="host">analytics.google.com</value>
+                <value id="google_tag_manager" type="host">www.googletagmanager.com</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

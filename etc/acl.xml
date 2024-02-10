@@ -2,7 +2,7 @@
 <!--
 /**
  * Copyright © Samdoit (support@samdoit.com). All rights reserved.
- * Please visit Samdoit.com for license details (https://samdoit.com/end-user-license-agreement).
+ * Please visit Samdoit.com for license details (http://www.samdoit.com/end-user-license-agreement).
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
