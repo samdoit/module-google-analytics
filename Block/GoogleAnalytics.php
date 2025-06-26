@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Copyright © Samdoit (support@samdoit.com). All rights reserved.
  * Please visit Samdoit.com for license details (https://www.samdoit.com/end-user-license-agreement).
  */
+
 declare(strict_types=1);
 
 namespace Samdoit\GoogleAnalytics\Block;
@@ -116,8 +118,38 @@ class GoogleAnalytics extends Template
     {
         return [
             'optPageUrl' => $this->getOptPageUrl(),
-            'measurementId' => $this->escapeHtmlAttr($measurementId, false)
+            'measurementId' => $this->escapeHtmlAttr($measurementId, false),
+            'isAnonymizedIpActive' => $this->_googleAnalyticsConfig->isAnonymizedIpActive()
         ];
+    }
+
+
+    /**
+     * Return information about page for GA tracking
+     *
+     * @link https://developers.google.com/analytics/devguides/collection/gtagjs
+     * @link https://developers.google.com/analytics/devguides/collection/ga4
+     *
+     * @param  string $measurementId
+     * @return array
+     */
+    public function getProductTrackingData(): array
+    {
+        $result = [];
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $request = $objectManager->get('Magento\Framework\App\Action\Context')->getRequest();
+
+        if ($request->getFullActionName() == 'catalog_category_view') {
+            $storeManager = $objectManager->get('Magento\Store\Model\StoreManagerInterface');
+            $currencyCode = $storeManager->getStore()->getCurrentCurrencyCode();
+            $result['currency'] = $currencyCode;
+            $result['action'] = 'catalog_category_view';
+            $category = $objectManager->get(\Magento\Framework\Registry::class)->registry('current_category');
+            $result['item_list_id'] = $this->escapeJsQuote($category->getId());
+            $result['item_list_name'] = $this->escapeJsQuote($category->getName());
+            $result['products'] = [];
+        }
+        return $result;
     }
 
     /**
@@ -192,6 +224,7 @@ class GoogleAnalytics extends Template
             'currentWebsite' => $this->getCurrentWebsiteId(),
             'cookieName' => Cookie::IS_USER_ALLOWED_SAVE_COOKIE,
             'pageTrackingData' => $this->getPageTrackingData($this->_googleAnalyticsConfig->getMeasurementId()),
+            'productTrackingData' => $this->getProductTrackingData(),
             'ordersTrackingData' => $this->getOrdersTrackingData(),
             'googleAnalyticsAvailable' => $this->_googleAnalyticsConfig->isAvailable()
         ];

@@ -77,7 +77,7 @@ class AnalyticsConfig
      * Whether anonymized IPs are active
      *
      * @param null|string|bool|int|Store $store
-     * 
+     *
      * @return bool
      */
     public function isAnonymizedIpActive($store = null): bool
@@ -89,7 +89,7 @@ class AnalyticsConfig
      * Retrieve Magento product attribute
      *
      * @param null|string|bool|int|Store $store
-     * 
+     *
      * @return string
      */
     public function getProductAttribute($store = null): string
@@ -101,7 +101,7 @@ class AnalyticsConfig
      * Retrieve Magento product brand attribute
      *
      * @param null|string|bool|int|Store $store
-     * 
+     *
      * @return string
      */
     public function getBrandAttribute($store = null): string

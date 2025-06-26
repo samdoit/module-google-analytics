@@ -57,6 +57,7 @@
                 <value id="samdoit-google" type="host">*.google.com</value>
                 <value id="samdoit-google-ua" type="host">*.google.com.ua</value>
                 <value id="samdoit-google-uk" type="host">*.google.co.uk</value>
+                <value id="samdoit-google-in" type="host">*.google.co.in</value>
                 <value id="samdoit-gstatic-com" type="host">*.gstatic.com</value>
                 <value id="samdoit-doubleclick-net" type="host">*.doubleclick.net</value>
                <value id="google_ad_services_pixel" type="host">googleads.g.doubleclick.net</value>

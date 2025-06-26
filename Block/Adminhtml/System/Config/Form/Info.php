@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © Samdoit (support@samdoit.com). All rights reserved.
  * Please visit Samdoit.com for license details (https://www.samdoit.com/end-user-license-agreement).
@@ -18,7 +19,7 @@ class Info extends \Samdoit\Community\Block\Adminhtml\System\Config\Form\Info
     protected function getModuleUrl(): string
     {
         return 'https://sam' . 'do' .
-            'it.com/magento2-extensions?utm_source=gtm_config&utm_medium=link&utm_campaign=regular';
+            'it.com/' . 'prod' . 'uct/mage' . 'nto.ht' . 'ml/' . 'mage' . 'nto-2.htm' . 'l?utm_source=Google' . 'Analytics' . 'Config&utm_medium=link&utm_campaign=regular';
     }
 
     /**

@@ -8,23 +8,20 @@ define(
     [
     'jquery',
     'mage/cookies'
-    ], function ($) {
+    ],
+    function ($) {
         'use strict';
 
         /**
          * @param {Object} config
          */
         return function (config) {
-            console.log('Manickam');
-            console.log('google-analytics');
-            console.log(JSON.stringify(config));
             var allowServices = false,
             allowedCookies,
             allowedWebsites,
             measurementId;
 
             if (config.isCookieRestrictionModeEnabled) {
-                console.log('isCookieRestrictionModeEnabled');
                 allowedCookies = $.mage.cookies.get(config.cookieName);
 
                 if (allowedCookies !== null) {
@@ -46,13 +43,22 @@ define(
                         gtag('config', config.pageTrackingData.accountId, { 'anonymize_ip': true });
                     } else {
                         gtag('config', measurementId);
-
                     }
                     // Purchase Event
                     if (config.ordersTrackingData.hasOwnProperty('currency')) {
                         var purchaseObject = config.ordersTrackingData.orders[0];
                         purchaseObject['items'] = config.ordersTrackingData.products;
                         gtag('event', 'purchase', purchaseObject);
+                    }
+                    // Product View Event
+                    if (config.productTrackingData.hasOwnProperty('currency')) {
+                        if (config.productTrackingData.action == 'catalog_category_view') {
+                            var categoryObject = {};
+                            categoryObject['item_list_id'] = config.productTrackingData.item_list_id;
+                            categoryObject['item_list_name'] = config.productTrackingData.item_list_name;
+                            categoryObject['items'] = config.productTrackingData.products;
+                            gtag('event', 'view_item_list', categoryObject);
+                        }
                     }
                 } else {
                     (function (d,s,u) {
@@ -65,20 +71,31 @@ define(
                     window.dataLayer = window.dataLayer || [];
                     function gtag()
                     {
-                        dataLayer.push(arguments);}
+                        dataLayer.push(arguments);
+                    }
                     gtag('js', new Date());
                     gtag('set', 'developer_id.dYjhlMD', true);
                     if (config.pageTrackingData.isAnonymizedIpActive) {
                         gtag('config', config.pageTrackingData.accountId, { 'anonymize_ip': true });
                     } else {
                         gtag('config', measurementId);
-
                     }
+
                     // Purchase Event
                     if (config.ordersTrackingData.hasOwnProperty('currency')) {
                         var purchaseObject = config.ordersTrackingData.orders[0];
                         purchaseObject['items'] = config.ordersTrackingData.products;
                         gtag('event', 'purchase', purchaseObject);
+                    }
+                    // Product View Event
+                    if (config.productTrackingData.hasOwnProperty('currency')) {
+                        if (config.productTrackingData.action == 'catalog_category_view') {
+                            var categoryObject = {};
+                            categoryObject['item_list_id'] = config.productTrackingData.item_list_id;
+                            categoryObject['item_list_name'] = config.productTrackingData.item_list_name;
+                            categoryObject['items'] = config.productTrackingData.products;
+                            gtag('event', 'view_item_list', categoryObject);
+                        }
                     }
                 }
             }

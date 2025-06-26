@@ -15,7 +15,8 @@ if (!isset($escaper)) {
 <?php
 $events = [
     'All Page View (page_view)',
-    'Checkout Success Page (purchase)'
+    'Checkout Success Page (purchase)',
+    'View Product List on category page, related/up-sell/cross-sell products (view_item_list)',
 ];
 $eventsPlus = [
     'View Product (view_item)',
@@ -24,18 +25,9 @@ $eventsPlus = [
     'Add To Cart (add_to_cart)',
     'Remove From Cart (remove_from_cart)',
     'Add To Wishlist (add_to_wishlist)',
-    'View Product List on category page, related/up-sell/cross-sell products (view_item_list)',
-    'Shipping Step on Checkout Page (add_shipping_info)',
-    'Payments Step on Checkout Page (add_payment_info)',
-    'Google Ads - Conversion Tracking',
-    'Google Ads - Dynamic Remarketing',
     'Sign In (login)',
     'Create an Account (sign_up)',
-    'Search (search)',
-    /*
-    'Earn Virtual Currency (earn_virtual_currency)',
-    'Spend Virtual Currency (spend_virtual_currency)'
-    */
+    'Search (search)'
 ];
 ?>
 <br/>
@@ -47,9 +39,9 @@ $eventsPlus = [
     </ul>
     <p <?php if (!$block->isPlusEnabled()) { ?>style="color: #eb5202"<?php } ?>>
         <strong>
-            <?= $escaper->escapeHtml(__(!$block->isPlusEnabled() ? 'Available in GTM Plus Only' : 'GTM Plus')) ?>
+            <?= $escaper->escapeHtml(__(!$block->isPlusEnabled() ? 'Available in Google Analytics 4 Plus Only' : 'Google Analytics 4 Plus')) ?>
             <?php if (!$block->isPlusEnabled()) { ?>
-                (<a style="color: #eb5202; text-decoration: underline;" href="https://www.samdoit.com" target="_blank">Read more</a>):
+                (<a style="color: #eb5202; text-decoration: underline;" href="https://www.samdoit.com/google-analytics-4-plus.html" target="_blank">Read more</a>):
             <?php } ?>
         </strong>
     </p>
@@ -61,8 +53,8 @@ $eventsPlus = [
         </ul>
     </div>
     <?php if (!$block->isPlusEnabled()) { ?>
-    <button title="Upgrade" type="button" class="primary" onclick="window.open('https://www.samdoit.com')">
-        <span>Upgrade to Google Analytics Plus</span>
+    <button title="Upgrade" type="button" class="primary" onclick="window.open('https://www.samdoit.com/google-analytics-4-plus.html')">
+        <span>Upgrade to Google Analytics 4 Plus</span>
     </button>
     <?php } ?>
 </div>
