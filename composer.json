@@ -1,14 +1,30 @@
 {
     "name": "samdoit/module-google-analytics",
     "description": "Magento 2 Module for Google Analytics 4",
-    "require": {
-        "samdoit/module-community" : ">=1.0.0"
-    },
     "type": "magento2-module",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
     ],
+    "authors": [
+        {
+            "name": "Samdoit Infotech",
+            "email": "support@samdoit.com",
+            "homepage": "https://www.samdoit.com",
+            "role": "Developer"
+        }
+    ],
+    "homepage": "https://www.samdoit.com",
+    "keywords": [
+        "magento2",
+        "magento2-extension",
+        "google-analytics",
+        "ga4",
+        "ecommerce-tracking"
+    ],
+    "require": {
+        "php": "~8.2.0||~8.3.0||~8.4.0"
+    },
     "suggest": {},
     "autoload": {
         "files": [

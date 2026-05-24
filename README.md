@@ -4,7 +4,8 @@
 [![Latest Stable Version](http://poser.pugx.org/samdoit/module-google-analytics/v)](https://packagist.org/packages/samdoit/module-google-analytics) 
 
 ## Requirements
-  * Magento Community Edition 2.1.x-2.4.x or Magento Enterprise Edition 2.1.x-2.4.x
+  * Magento Open Source / Adobe Commerce 2.4.6 or later
+  * PHP 8.2, 8.3, or 8.4
 
 ## Installation Method 1 - Installing via composer
   * Open command line

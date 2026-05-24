@@ -2,103 +2,76 @@
  * Copyright © Samdoit (support@samdoit.com). All rights reserved.
  * Please visit Samdoit.com for license details (http://www.samdoit.com/end-user-license-agreement).
  */
-/* jscs:disable */
-/* eslint-disable */
-define(
-    [
+define([
     'jquery',
     'mage/cookies'
-    ],
-    function ($) {
-        'use strict';
+], function ($) {
+    'use strict';
 
-        /**
-         * @param {Object} config
-         */
-        return function (config) {
-            var allowServices = false,
+    return function (config) {
+        let allowServices = false,
             allowedCookies,
             allowedWebsites,
             measurementId;
 
-            if (config.isCookieRestrictionModeEnabled) {
-                allowedCookies = $.mage.cookies.get(config.cookieName);
+        if (config.isCookieRestrictionModeEnabled) {
+            allowedCookies = $.mage.cookies.get(config.cookieName);
 
-                if (allowedCookies !== null) {
-                    allowedWebsites = JSON.parse(allowedCookies);
+            if (allowedCookies !== null) {
+                allowedWebsites = JSON.parse(allowedCookies);
 
-                    if (allowedWebsites[config.currentWebsite] === 1) {
-                        allowServices = true;
-                    }
-                }
-            } else {
-                allowServices = true;
-            }
-
-            if (allowServices) {
-                /* Global site tag (gtag.js) - Google Analytics */
-                measurementId = config.pageTrackingData.measurementId;
-                if (window.gtag) {
-                    if (config.pageTrackingData.isAnonymizedIpActive) {
-                        gtag('config', config.pageTrackingData.accountId, { 'anonymize_ip': true });
-                    } else {
-                        gtag('config', measurementId);
-                    }
-                    // Purchase Event
-                    if (config.ordersTrackingData.hasOwnProperty('currency')) {
-                        var purchaseObject = config.ordersTrackingData.orders[0];
-                        purchaseObject['items'] = config.ordersTrackingData.products;
-                        gtag('event', 'purchase', purchaseObject);
-                    }
-                    // Product View Event
-                    if (config.productTrackingData.hasOwnProperty('currency')) {
-                        if (config.productTrackingData.action == 'catalog_category_view') {
-                            var categoryObject = {};
-                            categoryObject['item_list_id'] = config.productTrackingData.item_list_id;
-                            categoryObject['item_list_name'] = config.productTrackingData.item_list_name;
-                            categoryObject['items'] = config.productTrackingData.products;
-                            gtag('event', 'view_item_list', categoryObject);
-                        }
-                    }
-                } else {
-                    (function (d,s,u) {
-                        var gtagScript = d.createElement(s);
-                        gtagScript.type = 'text/javascript';
-                        gtagScript.async = true;
-                        gtagScript.src = u;
-                        d.head.insertBefore(gtagScript, d.head.children[0]);
-                    })(document, 'script', 'https://www.googletagmanager.com/gtag/js?id=' + measurementId);
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag()
-                    {
-                        dataLayer.push(arguments);
-                    }
-                    gtag('js', new Date());
-                    gtag('set', 'developer_id.dYjhlMD', true);
-                    if (config.pageTrackingData.isAnonymizedIpActive) {
-                        gtag('config', config.pageTrackingData.accountId, { 'anonymize_ip': true });
-                    } else {
-                        gtag('config', measurementId);
-                    }
-
-                    // Purchase Event
-                    if (config.ordersTrackingData.hasOwnProperty('currency')) {
-                        var purchaseObject = config.ordersTrackingData.orders[0];
-                        purchaseObject['items'] = config.ordersTrackingData.products;
-                        gtag('event', 'purchase', purchaseObject);
-                    }
-                    // Product View Event
-                    if (config.productTrackingData.hasOwnProperty('currency')) {
-                        if (config.productTrackingData.action == 'catalog_category_view') {
-                            var categoryObject = {};
-                            categoryObject['item_list_id'] = config.productTrackingData.item_list_id;
-                            categoryObject['item_list_name'] = config.productTrackingData.item_list_name;
-                            categoryObject['items'] = config.productTrackingData.products;
-                            gtag('event', 'view_item_list', categoryObject);
-                        }
-                    }
+                if (allowedWebsites[config.currentWebsite] === 1) {
+                    allowServices = true;
                 }
             }
+        } else {
+            allowServices = true;
         }
-    }
-);
+
+        if (!allowServices || !config.googleAnalyticsAvailable) {
+            return;
+        }
+
+        measurementId = config.pageTrackingData.measurementId;
+
+        if (!globalThis.gtag) {
+            (function (d, s, u) {
+                const gtagScript = d.createElement(s);
+
+                gtagScript.type = 'text/javascript';
+                gtagScript.async = true;
+                gtagScript.src = u;
+                d.head.insertBefore(gtagScript, d.head.children[0]);
+            })(document, 'script', 'https://www.googletagmanager.com/gtag/js?id=' + measurementId);
+
+            globalThis.dataLayer = globalThis.dataLayer || [];
+            globalThis.gtag = function () {
+                globalThis.dataLayer.push(arguments);
+            };
+            globalThis.gtag('js', new Date());
+            globalThis.gtag('set', 'developer_id.dYjhlMD', true);
+        }
+
+        if (config.pageTrackingData.isAnonymizedIpActive) {
+            globalThis.gtag('config', measurementId, {'anonymize_ip': true});
+        } else {
+            globalThis.gtag('config', measurementId);
+        }
+
+        if (config.ordersTrackingData.hasOwnProperty('currency')) {
+            let purchaseObject = config.ordersTrackingData.orders[0];
+
+            purchaseObject['items'] = config.ordersTrackingData.products;
+            globalThis.gtag('event', 'purchase', purchaseObject);
+        }
+
+        if (config.productTrackingData.hasOwnProperty('currency') &&
+            config.productTrackingData.action === 'catalog_category_view') {
+            globalThis.gtag('event', 'view_item_list', {
+                'item_list_id': config.productTrackingData.item_list_id,
+                'item_list_name': config.productTrackingData.item_list_name,
+                'items': config.productTrackingData.products
+            });
+        }
+    };
+});

@@ -9,22 +9,36 @@ declare(strict_types=1);
 
 namespace Samdoit\GoogleAnalytics\Block\Adminhtml\System\Config\Form;
 
-class Info extends \Samdoit\Community\Block\Adminhtml\System\Config\Form\Info
+use Magento\Config\Block\System\Config\Form\Field;
+use Magento\Framework\Data\Form\Element\AbstractElement;
+
+class Info extends Field
 {
     /**
-     * Return extension url
+     * Render extension info link in the admin config field row.
      *
+     * @param AbstractElement $element
+     * @return string
+     */
+    protected function _getElementHtml(AbstractElement $element): string
+    {
+        return sprintf(
+            '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+            $this->escapeUrl($this->getModuleUrl()),
+            $this->escapeHtml($this->getModuleTitle())
+        );
+    }
+
+    /**
      * @return string
      */
     protected function getModuleUrl(): string
     {
-        return 'https://sam' . 'do' .
-            'it.com/' . 'prod' . 'uct/mage' . 'nto.ht' . 'ml/' . 'mage' . 'nto-2.htm' . 'l?utm_source=Google' . 'Analytics' . 'Config&utm_medium=link&utm_campaign=regular';
+        return 'https://www.samdoit.com/product/magento.html/magento-2.html'
+            . '?utm_source=GoogleAnalyticsConfig&utm_medium=link&utm_campaign=regular';
     }
 
     /**
-     * Return extension title
-     *
      * @return string
      */
     protected function getModuleTitle(): string

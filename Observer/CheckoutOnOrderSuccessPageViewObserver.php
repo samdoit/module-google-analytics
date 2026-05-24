@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Copyright © Samdoit (support@samdoit.com). All rights reserved.
  * Please visit Samdoit.com for license details (http://www.samdoit.com/end-user-license-agreement).
  */
+
 declare(strict_types=1);
 
 namespace Samdoit\GoogleAnalytics\Observer;

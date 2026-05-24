@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Copyright © Samdoit (support@samdoit.com). All rights reserved.
  * Please visit Samdoit.com for license details (https://www.samdoit.com/end-user-license-agreement).
  */
+
 declare(strict_types=1);
 
 namespace Samdoit\GoogleAnalytics\Model\Config;
@@ -82,7 +84,11 @@ class AnalyticsConfig
      */
     public function isAnonymizedIpActive($store = null): bool
     {
-        return (bool)$this->scopeConfig->getValue(self::XML_PATH_ANALYTICS_ANONYMIZE, ScopeInterface::SCOPE_STORE, $store);
+        return (bool)$this->scopeConfig->getValue(
+            self::XML_PATH_ANALYTICS_ANONYMIZE,
+            ScopeInterface::SCOPE_STORE,
+            $store
+        );
     }
 
     /**
@@ -94,7 +100,11 @@ class AnalyticsConfig
      */
     public function getProductAttribute($store = null): string
     {
-        return (string)$this->scopeConfig->getValue(self::XML_PATH_ATTRIBUTES_PRODUCT, ScopeInterface::SCOPE_STORE, $store);
+        return (string)$this->scopeConfig->getValue(
+            self::XML_PATH_ATTRIBUTES_PRODUCT,
+            ScopeInterface::SCOPE_STORE,
+            $store
+        );
     }
 
     /**
@@ -106,6 +116,10 @@ class AnalyticsConfig
      */
     public function getBrandAttribute($store = null): string
     {
-        return (string)$this->scopeConfig->getValue(self::XML_PATH_ATTRIBUTES_BRAND, ScopeInterface::SCOPE_STORE, $store);
+        return (string)$this->scopeConfig->getValue(
+            self::XML_PATH_ATTRIBUTES_BRAND,
+            ScopeInterface::SCOPE_STORE,
+            $store
+        );
     }
 }

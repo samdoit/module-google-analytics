@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Samdoit\GoogleAnalytics\Block;
 
+use Magento\Catalog\Model\Layer\Resolver as LayerResolver;
 use Magento\Cookie\Helper\Cookie;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Serialize\SerializerInterface;
@@ -16,6 +17,8 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Samdoit\GoogleAnalytics\Model\Config\AnalyticsConfig;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\RequestInterface;
 
 /**
  * GoogleAnalytics Page Block
@@ -23,31 +26,44 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 class GoogleAnalytics extends Template
 {
     /**
-     * Google Analytics data
-     *
      * @var AnalyticsConfig
      */
-    private $_googleAnalyticsConfig;
+    private AnalyticsConfig $googleAnalyticsConfig;
 
     /**
      * @var OrderRepositoryInterface
      */
-    private $_salesOrderRepository;
+    private OrderRepositoryInterface $salesOrderRepository;
 
     /**
      * @var Cookie
      */
-    private $_cookieHelper;
+    private Cookie $cookieHelper;
 
     /**
      * @var SerializerInterface
      */
-    private $_serializer;
+    private SerializerInterface $serializer;
 
     /**
      * @var SearchCriteriaBuilder
      */
-    private $_searchCriteriaBuilder;
+    private SearchCriteriaBuilder $searchCriteriaBuilder;
+
+    /**
+     * @var LayerResolver
+     */
+    private LayerResolver $layerResolver;
+
+    /**
+     * @var StoreManagerInterface
+     */
+    private StoreManagerInterface $storeManager;
+
+    /**
+     * @var RequestInterface
+     */
+    private RequestInterface $request;
 
     /**
      * @param Context                  $context
@@ -56,6 +72,9 @@ class GoogleAnalytics extends Template
      * @param SerializerInterface      $serializer
      * @param SearchCriteriaBuilder    $searchCriteriaBuilder
      * @param OrderRepositoryInterface $orderRepository
+     * @param LayerResolver            $layerResolver
+     * @param StoreManagerInterface    $storeManager
+     * @param RequestInterface         $request
      * @param array                    $data
      */
     public function __construct(
@@ -65,13 +84,19 @@ class GoogleAnalytics extends Template
         SerializerInterface $serializer,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         OrderRepositoryInterface $orderRepository,
+        LayerResolver $layerResolver,
+        StoreManagerInterface $storeManager,
+        RequestInterface $request,
         array $data = []
     ) {
-        $this->_googleAnalyticsConfig = $googleAnalyticsConfig;
-        $this->_cookieHelper = $cookieHelper;
-        $this->_serializer = $serializer;
-        $this->_salesOrderRepository = $orderRepository;
-        $this->_searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->googleAnalyticsConfig = $googleAnalyticsConfig;
+        $this->cookieHelper = $cookieHelper;
+        $this->serializer = $serializer;
+        $this->salesOrderRepository = $orderRepository;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->layerResolver = $layerResolver;
+        $this->storeManager = $storeManager;
+        $this->request = $request;
         parent::__construct($context, $data);
     }
 
@@ -92,7 +117,7 @@ class GoogleAnalytics extends Template
      */
     public function isCookieRestrictionModeEnabled(): bool
     {
-        return (bool) $this->_cookieHelper->isCookieRestrictionModeEnabled();
+        return (bool) $this->cookieHelper->isCookieRestrictionModeEnabled();
     }
 
     /**
@@ -102,7 +127,7 @@ class GoogleAnalytics extends Template
      */
     public function getCurrentWebsiteId(): int
     {
-        return (int) $this->_storeManager->getWebsite()->getId();
+        return (int) $this->storeManager->getWebsite()->getId();
     }
 
     /**
@@ -111,18 +136,17 @@ class GoogleAnalytics extends Template
      * @link https://developers.google.com/analytics/devguides/collection/gtagjs
      * @link https://developers.google.com/analytics/devguides/collection/ga4
      *
-     * @param  string $measurementId
+     * @param string $measurementId
      * @return array
      */
-    public function getPageTrackingData($measurementId): array
+    public function getPageTrackingData(string $measurementId): array
     {
         return [
             'optPageUrl' => $this->getOptPageUrl(),
             'measurementId' => $this->escapeHtmlAttr($measurementId, false),
-            'isAnonymizedIpActive' => $this->_googleAnalyticsConfig->isAnonymizedIpActive()
+            'isAnonymizedIpActive' => $this->googleAnalyticsConfig->isAnonymizedIpActive()
         ];
     }
-
 
     /**
      * Return information about page for GA tracking
@@ -130,23 +154,23 @@ class GoogleAnalytics extends Template
      * @link https://developers.google.com/analytics/devguides/collection/gtagjs
      * @link https://developers.google.com/analytics/devguides/collection/ga4
      *
-     * @param  string $measurementId
      * @return array
      */
     public function getProductTrackingData(): array
     {
         $result = [];
-        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $request = $objectManager->get('Magento\Framework\App\Action\Context')->getRequest();
-
-        if ($request->getFullActionName() == 'catalog_category_view') {
-            $storeManager = $objectManager->get('Magento\Store\Model\StoreManagerInterface');
-            $currencyCode = $storeManager->getStore()->getCurrentCurrencyCode();
+        if ($this->request->getFullActionName() === 'catalog_category_view') {
+            $currencyCode = $this->storeManager->getStore()->getCurrentCurrencyCode();
             $result['currency'] = $currencyCode;
             $result['action'] = 'catalog_category_view';
-            $category = $objectManager->get(\Magento\Framework\Registry::class)->registry('current_category');
-            $result['item_list_id'] = $this->escapeJsQuote($category->getId());
-            $result['item_list_name'] = $this->escapeJsQuote($category->getName());
+            $category = $this->layerResolver->get()->getCurrentCategory();
+            if ($category && $category->getId()) {
+                $result['item_list_id'] = $this->escapeJsQuote((string) $category->getId());
+                $result['item_list_name'] = $this->escapeJsQuote((string) $category->getName());
+            } else {
+                $result['item_list_id'] = '';
+                $result['item_list_name'] = '';
+            }
             $result['products'] = [];
         }
         return $result;
@@ -169,25 +193,21 @@ class GoogleAnalytics extends Template
         if (empty($orderIds) || !is_array($orderIds)) {
             return $result;
         }
-        $this->_searchCriteriaBuilder->addFilter(
-            'entity_id',
-            $orderIds,
-            'in'
-        );
-        $collection = $this->_salesOrderRepository->getList($this->_searchCriteriaBuilder->create());
+        $this->searchCriteriaBuilder->addFilter('entity_id', $orderIds, 'in');
+        $collection = $this->salesOrderRepository->getList($this->searchCriteriaBuilder->create());
 
         foreach ($collection->getItems() as $order) {
             foreach ($order->getAllVisibleItems() as $item) {
                 $result['products'][] = [
                     'item_id' => $this->escapeJsQuote($item->getSku()),
-                    'item_name' =>  $this->escapeJsQuote($item->getName()),
+                    'item_name' => $this->escapeJsQuote($item->getName()),
                     'price' => number_format((float) $item->getPrice(), 2),
-                    'quantity' => (int)$item->getQtyOrdered(),
+                    'quantity' => (int) $item->getQtyOrdered(),
                 ];
             }
             $result['orders'][] = [
-                'transaction_id' =>  $order->getIncrementId(),
-                'affiliation' => $this->escapeJsQuote($this->_storeManager->getStore()->getFrontendName()),
+                'transaction_id' => $order->getIncrementId(),
+                'affiliation' => $this->escapeJsQuote($this->storeManager->getStore()->getFrontendName()),
                 'value' => number_format((float) $order->getGrandTotal(), 2),
                 'tax' => number_format((float) $order->getTaxAmount(), 2),
                 'shipping' => number_format((float) $order->getShippingAmount(), 2),
@@ -223,11 +243,11 @@ class GoogleAnalytics extends Template
             'isCookieRestrictionModeEnabled' => $this->isCookieRestrictionModeEnabled(),
             'currentWebsite' => $this->getCurrentWebsiteId(),
             'cookieName' => Cookie::IS_USER_ALLOWED_SAVE_COOKIE,
-            'pageTrackingData' => $this->getPageTrackingData($this->_googleAnalyticsConfig->getMeasurementId()),
+            'pageTrackingData' => $this->getPageTrackingData($this->googleAnalyticsConfig->getMeasurementId()),
             'productTrackingData' => $this->getProductTrackingData(),
             'ordersTrackingData' => $this->getOrdersTrackingData(),
-            'googleAnalyticsAvailable' => $this->_googleAnalyticsConfig->isAvailable()
+            'googleAnalyticsAvailable' => $this->googleAnalyticsConfig->isAvailable()
         ];
-        return $this->_serializer->serialize($analyticData);
+        return $this->serializer->serialize($analyticData);
     }
 }
