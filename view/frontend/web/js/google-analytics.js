@@ -18,9 +18,13 @@ define([
             allowedCookies = $.mage.cookies.get(config.cookieName);
 
             if (allowedCookies !== null) {
-                allowedWebsites = JSON.parse(allowedCookies);
+                try {
+                    allowedWebsites = JSON.parse(allowedCookies);
+                } catch (e) {
+                    allowedWebsites = {};
+                }
 
-                if (allowedWebsites[config.currentWebsite] === 1) {
+                if (allowedWebsites && allowedWebsites[config.currentWebsite] === 1) {
                     allowServices = true;
                 }
             }
@@ -58,11 +62,10 @@ define([
             globalThis.gtag('config', measurementId);
         }
 
-        if (config.ordersTrackingData.hasOwnProperty('currency')) {
-            let purchaseObject = config.ordersTrackingData.orders[0];
-
-            purchaseObject['items'] = config.ordersTrackingData.products;
-            globalThis.gtag('event', 'purchase', purchaseObject);
+        if (config.ordersTrackingData.hasOwnProperty('orders')) {
+            config.ordersTrackingData.orders.forEach(function (purchaseObject) {
+                globalThis.gtag('event', 'purchase', purchaseObject);
+            });
         }
 
         if (config.productTrackingData.hasOwnProperty('currency') &&

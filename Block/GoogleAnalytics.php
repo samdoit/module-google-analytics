@@ -143,7 +143,7 @@ class GoogleAnalytics extends Template
     {
         return [
             'optPageUrl' => $this->getOptPageUrl(),
-            'measurementId' => $this->escapeHtmlAttr($measurementId, false),
+            'measurementId' => $measurementId,
             'isAnonymizedIpActive' => $this->googleAnalyticsConfig->isAnonymizedIpActive()
         ];
     }
@@ -165,8 +165,8 @@ class GoogleAnalytics extends Template
             $result['action'] = 'catalog_category_view';
             $category = $this->layerResolver->get()->getCurrentCategory();
             if ($category && $category->getId()) {
-                $result['item_list_id'] = $this->escapeJsQuote((string) $category->getId());
-                $result['item_list_name'] = $this->escapeJsQuote((string) $category->getName());
+                $result['item_list_id'] = (string) $category->getId();
+                $result['item_list_name'] = (string) $category->getName();
             } else {
                 $result['item_list_id'] = '';
                 $result['item_list_name'] = '';
@@ -197,20 +197,23 @@ class GoogleAnalytics extends Template
         $collection = $this->salesOrderRepository->getList($this->searchCriteriaBuilder->create());
 
         foreach ($collection->getItems() as $order) {
+            $items = [];
             foreach ($order->getAllVisibleItems() as $item) {
-                $result['products'][] = [
-                    'item_id' => $this->escapeJsQuote($item->getSku()),
-                    'item_name' => $this->escapeJsQuote($item->getName()),
-                    'price' => number_format((float) $item->getPrice(), 2),
+                $items[] = [
+                    'item_id' => (string) $item->getSku(),
+                    'item_name' => (string) $item->getName(),
+                    'price' => round((float) $item->getPrice(), 2),
                     'quantity' => (int) $item->getQtyOrdered(),
                 ];
             }
             $result['orders'][] = [
                 'transaction_id' => $order->getIncrementId(),
-                'affiliation' => $this->escapeJsQuote($this->storeManager->getStore()->getFrontendName()),
-                'value' => number_format((float) $order->getGrandTotal(), 2),
-                'tax' => number_format((float) $order->getTaxAmount(), 2),
-                'shipping' => number_format((float) $order->getShippingAmount(), 2),
+                'affiliation' => (string) $this->storeManager->getStore()->getFrontendName(),
+                'value' => round((float) $order->getGrandTotal(), 2),
+                'tax' => round((float) $order->getTaxAmount(), 2),
+                'shipping' => round((float) $order->getShippingAmount(), 2),
+                'currency' => $order->getOrderCurrencyCode(),
+                'items' => $items,
             ];
             $result['currency'] = $order->getOrderCurrencyCode();
         }
